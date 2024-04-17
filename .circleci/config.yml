@@ -1,43 +1,63 @@
 # Couldn't automatically generate a config from your source code.
 # This is a generic template to serve as a base for your custom config
 # See: https://circleci.com/docs/configuration-reference
+# version: 2.1
+# jobs:
+#   test:
+#     docker:
+#       - image: cimg/base:stable
+#     steps:
+#       - checkout
+#       # Replace this with a real test runner invocation
+#       - run:
+#           name: Run tests
+#           command: echo 'replace me with real tests!' && false
+#   build:
+#     docker:
+#       - image: cimg/base:stable
+#     steps:
+#       - checkout
+#       # Replace this with steps to build a package, or executable
+#       - run:
+#           name: Build an artifact
+#           command: touch example.txt
+#       - store_artifacts:
+#           path: example.txt
+#   deploy:
+#     docker:
+#       - image: cimg/base:stable
+#     steps:
+#       # Replace this with steps to deploy to users
+#       - run:
+#           name: deploy
+#           command: '#e.g. ./deploy.sh'
+# workflows:
+#   example:
+#     jobs:
+#       - test
+#       - build:
+#           requires:
+#             - test
+#       - deploy:
+#           requires:
+#             - test
 version: 2.1
 jobs:
-  test:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      # Replace this with a real test runner invocation
-      - run:
-          name: Run tests
-          command: echo 'replace me with real tests!' && false
   build:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/python:3.9
     steps:
       - checkout
-      # Replace this with steps to build a package, or executable
+      - run: pip install pylint pytest sphinx
+      - run: pylint calculator.py
+      - run: pytest
       - run:
-          name: Build an artifact
-          command: touch example.txt
-      - store_artifacts:
-          path: example.txt
-  deploy:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      # Replace this with steps to deploy to users
-      - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Generate Documentation
+          command: |
+            sphinx-apidoc -o docs/source/ . --force
+            sphinx-build -b html docs/source/ docs/build/
 workflows:
-  example:
+  version: 2
+  build-and-test:
     jobs:
-      - test
-      - build:
-          requires:
-            - test
-      - deploy:
-          requires:
-            - test
+      - build
