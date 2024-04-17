@@ -54,8 +54,8 @@ jobs:
       - run:
           name: Generate Documentation
           command: |
-            sphinx-apidoc -o docs/source/ . --force
-            sphinx-build -b html docs/source/ docs/build/
+            sphinx-apidoc -o docs .
+            sphinx-build -b html docs docs/build
 workflows:
   version: 2
   build-and-test:
