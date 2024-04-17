@@ -1,3 +1,8 @@
+"""
+This module provides a Calculator class with basic arithmetic operations.
+"""
+
+
 class Calculator:
     """
     基本的な算術演算ができるシンプルな電卓アプリ。
